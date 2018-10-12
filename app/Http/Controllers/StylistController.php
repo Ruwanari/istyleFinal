@@ -49,7 +49,7 @@ class StylistController extends Controller{
 
     public function getLocations()
     {
-        $locations = \App\Stylist::distinct()->get(['Location']);
+        $locations = \App\Stylist::distinct()->orderBy('Location')->get(['Location']);
         $response = [
             'locations'=>$locations
         ];
@@ -59,7 +59,7 @@ class StylistController extends Controller{
 
     public function getRates()
     {
-        $rates = \App\Stylist::distinct()->get(['RatePerHour']);
+        $rates = \App\Stylist::distinct()->orderBy('RatePerHour')->get(['RatePerHour']);
         $response = [
             'rates'=>$rates
         ];
@@ -121,7 +121,16 @@ class StylistController extends Controller{
         ->select('stylists.*', 'skill.Description','jobtype.JobDescription')
         ->groupBy('stylists.id')
         ->newQuery();
-
+        
+        if ($request->has('FirstName')) 
+        {
+            $stylist->where('FirstName','LIKE','%' .$request->input('FirstName'). '%'); 
+        }
+        
+        if ($request->has('LastName')) 
+        {
+            $stylist->where('LastName','LIKE','%' .$request->input('LastName'). '%');
+        }
     
         if ($request->has('location')) 
         {
@@ -144,6 +153,13 @@ class StylistController extends Controller{
         {
             $stylist->where('JobDescription',$request->input('jobType'));
             
+        }
+
+        
+        if ($request->has('firstLastName')) 
+        {   
+            $stylist->where('FirstName','LIKE','%' .$request->input('firstLastName'). '%');
+          
         }
         
 
